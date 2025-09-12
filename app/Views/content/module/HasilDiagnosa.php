@@ -6,7 +6,7 @@ $hasil = session()->get('hasil');
 ?>
 
 <body>
-    <h1 class="h3 mb-0 text-gray-800">Tingkat Kecocokan</h1><br>
+    <h1 class="h3 mb-0 text-gray-800">Hasil Kerusakan</h1><br>
 
     <div class="row">
         <div class="col-lg mb-4">

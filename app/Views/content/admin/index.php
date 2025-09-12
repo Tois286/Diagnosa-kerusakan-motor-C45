@@ -23,6 +23,10 @@
                         <?= $this->include('content/layout/row') ?>
                     </div>
 
+                    <div id="Profile" hidden>
+                        <?= $this->include('content/admin/Profile') ?>
+                    </div>
+
                     <div id="Gejala" hidden>
                         <?= $this->include('content/module/Dataset/gejala') ?>
                     </div>
@@ -58,6 +62,8 @@
                     <div id="DetailDiagnosa" hidden>
                         <?= $this->include('content/module/DetailDiagnosa') ?>
                     </div>
+
+
                     <!-- Content Row -->
 
                 </div>

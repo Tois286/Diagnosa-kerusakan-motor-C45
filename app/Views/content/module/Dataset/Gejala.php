@@ -23,7 +23,7 @@
                             </div>
                         </div>
                     </form>
-                    <div class="table-responsive">
+                    <div class="table-responsive" style="max-height: 300px;">
                         <table class="table">
                             <tr>
                                 <th>No.</th>

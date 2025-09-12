@@ -4,7 +4,7 @@
         <div class="col-lg mb-4">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Tabel Gejala</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Tabel Kerusakan</h6>
                 </div>
                 <?php if (session()->getFlashdata('success')): ?>
                     <div class="alert alert-success"><?= session()->getFlashdata('success') ?></div>
@@ -23,7 +23,7 @@
                             </div>
                         </div>
                     </form>
-                    <div class="table-responsive">
+                    <div class="table-responsive" style="max-height: 300px;">
                         <table class="table">
                             <tr>
                                 <th>No.</th>
