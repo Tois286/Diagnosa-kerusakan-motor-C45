@@ -4,10 +4,10 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class DataTrainingModel extends Model
+class DataTestingModel extends Model
 {
-    protected $table      = 'data_training';   // nama tabel
-    protected $primaryKey = 'id_training';
+    protected $table      = 'data_testing';   // nama tabel
+    protected $primaryKey = 'id_testing';
 
     protected $allowedFields = [
         'G1',

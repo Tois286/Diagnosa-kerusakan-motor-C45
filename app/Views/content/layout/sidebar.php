@@ -26,25 +26,24 @@
      <div class="sidebar-heading">
          setting C4.5
      </div>
-
-     <!-- Nav Item - Pages Collapse Menu -->
-     <li class="nav-item">
-         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-             aria-expanded="true" aria-controls="collapseTwo">
-             <i class="fas fa-fw fa-file"></i>
-             <span>Dataset C4.5</span>
-         </a>
-         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-             <div class="bg-white py-2 collapse-inner rounded">
-                 <h6 class="collapse-header">Custom Dataset:</h6>
-                 <a class="collapse-item nav-btn" type="button" data-target="Gejala">Gejala</a>
-                 <a class="collapse-item nav-btn" type="button" data-target="Kerusakan">Kerusakan</a>
-                 <a class="collapse-item nav-btn" type="button" data-target="Hasil">Hasil DataSet</a>
-                 <a class="collapse-item nav-btn" type="button" data-target="Penyebab">Penyebab</a>
+     <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+         <!-- Nav Item - Pages Collapse Menu -->
+         <li class="nav-item">
+             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+                 aria-expanded="true" aria-controls="collapseTwo">
+                 <i class="fas fa-fw fa-file"></i>
+                 <span>Dataset C4.5</span>
+             </a>
+             <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                 <div class="bg-white py-2 collapse-inner rounded">
+                     <h6 class="collapse-header">Custom Dataset:</h6>
+                     <a class="collapse-item nav-btn" type="button" data-target="Gejala">Gejala</a>
+                     <a class="collapse-item nav-btn" type="button" data-target="Kerusakan">Kerusakan</a>
+                     <a class="collapse-item nav-btn" type="button" data-target="Hasil">Hasil DataSet</a>
+                 </div>
              </div>
-         </div>
-     </li>
-
+         </li>
+     <?php endif; ?>
      <!-- Nav Item - Utilities Collapse Menu -->
      <li class="nav-item">
          <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
@@ -56,9 +55,11 @@
              data-parent="#accordionSidebar">
              <div class="bg-white py-2 collapse-inner rounded">
                  <h6 class="collapse-header">Manage Users:</h6>
-                 <a class="collapse-item nav-btn" type="button" data-target="Admin">Admin</a>
+                 <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                     <a class="collapse-item nav-btn" type="button" data-target="Admin">Admin</a>
+                 <?php endif; ?>
                  <a class="collapse-item nav-btn" type="button" data-target="Karyawan">Karyawan</a>
-                 <a class="collapse-item nav-btn" type="button" data-target="Pelanggan">Pelanggan</a>
+                 <a class="collapse-item nav-btn" type="button" data-target="Pelanggan">Guest</a>
              </div>
          </div>
      </li>

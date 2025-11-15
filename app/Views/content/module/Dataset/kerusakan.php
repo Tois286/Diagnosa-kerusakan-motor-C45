@@ -13,12 +13,11 @@
                     <form style="padding-bottom:20px;" action="<?= base_url('kerusakan/save') ?>" method="post">
                         <div class="row">
                             <div class="col">
-                                <input type="text" name="kode_kerusakan" class="form-control" placeholder="Kode Gejala">
+                                <input type="text" name="kode_kerusakan" class="form-control" placeholder="Kode Kerusakan"><br>
+                                <input type="text" name="nama_kerusakan" class="form-control" placeholder="Nama Kerusakan">
                             </div>
                             <div class="col">
-                                <input type="text" name="nama_kerusakan" class="form-control" placeholder="Nama Gejala">
-                            </div>
-                            <div class="col">
+                                <input type="text" name="solusi" class="form-control" placeholder="Solusi"><br>
                                 <button class="form-control btn btn-primary">Simpan</button>
                             </div>
                         </div>

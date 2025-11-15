@@ -6,6 +6,8 @@ class Home extends BaseController
 {
     public function index(): string
     {
-        return view('login');
+        $gejalaModel = new \App\Models\GejalaModel();
+        $data['gejala'] = $gejalaModel->findAll();
+        return view('login', $data);
     }
 }

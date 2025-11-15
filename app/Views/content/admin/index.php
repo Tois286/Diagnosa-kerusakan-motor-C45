@@ -24,15 +24,11 @@
                     </div>
 
                     <div id="Profile" hidden>
-                        <?= $this->include('content/admin/Profile') ?>
+                        <?= $this->include('content/Profile') ?>
                     </div>
 
                     <div id="Gejala" hidden>
                         <?= $this->include('content/module/Dataset/gejala') ?>
-                    </div>
-
-                    <div id="Penyebab" hidden>
-                        <?= $this->include('content/module/Dataset/penyebab') ?>
                     </div>
 
                     <div id="Kerusakan" hidden>

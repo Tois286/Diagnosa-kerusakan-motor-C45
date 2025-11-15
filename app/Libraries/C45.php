@@ -43,7 +43,7 @@ class C45
         return $entropy;
     }
 
-    // Hitung gain
+    // Hitung gain untuk kategori
     protected function gain($data, $attribute)
     {
         $total = count($data);
@@ -60,18 +60,106 @@ class C45
             $entropyAfter += (count($subset) / $total) * $this->entropy($subset);
         }
 
-        $gain = $entropyBefore - $entropyAfter;
-
-        // Simpan trace gain tiap atribut
-        $this->trace['gain'][] = [
-            'attribute'      => $attribute,
-            'entropy_before' => round($entropyBefore, 4),
-            'entropy_after'  => round($entropyAfter, 4),
-            'gain'           => round($gain, 4)
-        ];
-
-        return $gain;
+        return $entropyBefore - $entropyAfter;
     }
+
+    // Hitung SplitInfo
+    protected function splitInfo($data, $splits)
+    {
+        $total = count($data);
+        $splitInfo = 0;
+        foreach ($splits as $subset) {
+            $p = count($subset) / $total;
+            if ($p > 0) {
+                $splitInfo -= $p * log($p, 2);
+            }
+        }
+        return $splitInfo;
+    }
+
+    // Hitung GainRatio (untuk kategori maupun numerik)
+    // Hitung GainRatio (untuk kategori maupun numerik)
+    protected function gainRatio($data, $attribute)
+    {
+        // Cegah error kalau dataset kosong
+        if (empty($data)) {
+            return ['gain_ratio' => 0, 'threshold' => null];
+        }
+
+        // Ambil baris pertama secara aman
+        $firstRow = reset($data);
+        if (!isset($firstRow[$attribute])) {
+            return ['gain_ratio' => 0, 'threshold' => null];
+        }
+
+        $isNumeric = is_numeric($firstRow[$attribute]);
+
+        if (!$isNumeric) {
+            // --- Atribut kategori ---
+            $total = count($data);
+            $gain = $this->gain($data, $attribute);
+
+            $values = [];
+            foreach ($data as $row) {
+                $val = $row[$attribute];
+                $values[$val][] = $row;
+            }
+
+            $splitInfo = $this->splitInfo($data, $values);
+            $gainRatio = ($splitInfo == 0) ? 0 : $gain / $splitInfo;
+
+            $this->trace['gain_ratio'][] = [
+                'attribute'  => $attribute,
+                'type'       => 'categorical',
+                'gain'       => round($gain, 4),
+                'split_info' => round($splitInfo, 4),
+                'gain_ratio' => round($gainRatio, 4)
+            ];
+
+            return ['gain_ratio' => $gainRatio, 'threshold' => null];
+        } else {
+            // --- Atribut numerik ---
+            $sorted = $data;
+            usort($sorted, fn($a, $b) => $a[$attribute] <=> $b[$attribute]);
+
+            $bestGR = -INF;
+            $bestThreshold = null;
+
+            for ($i = 0; $i < count($sorted) - 1; $i++) {
+                $currVal = $sorted[$i][$attribute];
+                $nextVal = $sorted[$i + 1][$attribute];
+                if ($currVal == $nextVal) continue;
+
+                $threshold = ($currVal + $nextVal) / 2;
+
+                $left = array_filter($data, fn($row) => $row[$attribute] <= $threshold);
+                $right = array_filter($data, fn($row) => $row[$attribute] > $threshold);
+
+                $entropyBefore = $this->entropy($data);
+                $entropyAfter = (count($left) / count($data)) * $this->entropy($left)
+                    + (count($right) / count($data)) * $this->entropy($right);
+                $gain = $entropyBefore - $entropyAfter;
+
+                $splitInfo = $this->splitInfo($data, [$left, $right]);
+                $gainRatio = ($splitInfo == 0) ? 0 : $gain / $splitInfo;
+
+                if ($gainRatio > $bestGR) {
+                    $bestGR = $gainRatio;
+                    $bestThreshold = $threshold;
+                }
+            }
+
+            $this->trace['gain_ratio'][] = [
+                'attribute'  => $attribute,
+                'type'       => 'numeric',
+                'threshold'  => $bestThreshold,
+                'gain_ratio' => round($bestGR, 4)
+            ];
+
+            return ['gain_ratio' => $bestGR, 'threshold' => $bestThreshold];
+        }
+    }
+
 
     // Bangun pohon
     public function buildTree($data = null, $attributes = null, $depth = 0)
@@ -90,35 +178,50 @@ class C45
             return ['label' => key($counts)];
         }
 
-        // Cari atribut terbaik
+        // Cari atribut terbaik dengan Gain Ratio
         $bestAttr = null;
-        $bestGain = -INF;
+        $bestGR = -INF;
+        $bestThreshold = null;
+
         foreach ($attributes as $attr) {
-            $g = $this->gain($data, $attr);
-            if ($g > $bestGain) {
-                $bestGain = $g;
+            $result = $this->gainRatio($data, $attr);
+            if ($result['gain_ratio'] > $bestGR) {
+                $bestGR = $result['gain_ratio'];
                 $bestAttr = $attr;
+                $bestThreshold = $result['threshold'];
             }
         }
 
-        // Catat pemilihan atribut di trace pohon
         $this->trace['tree'][] = str_repeat("—", $depth)
-            . " Pilih atribut: $bestAttr (gain=" . round($bestGain, 3) . ")";
+            . " Pilih atribut: $bestAttr"
+            . ($bestThreshold !== null ? " <= $bestThreshold" : "")
+            . " (GainRatio=" . round($bestGR, 3) . ")";
 
-        $tree = ['attribute' => $bestAttr, 'branches' => []];
-        $values = array_unique(array_column($data, $bestAttr));
+        $tree = ['attribute' => $bestAttr, 'threshold' => $bestThreshold, 'branches' => []];
 
-        foreach ($values as $val) {
-            $subset = array_filter($data, fn($row) => $row[$bestAttr] == $val);
+        if ($bestThreshold === null) {
+            // Atribut kategori
+            $values = array_unique(array_column($data, $bestAttr));
+            foreach ($values as $val) {
+                $subset = array_filter($data, fn($row) => $row[$bestAttr] == $val);
 
-            if (empty($subset)) {
-                $counts = array_count_values(array_column($data, $this->target));
-                arsort($counts);
-                $tree['branches'][$val] = ['label' => key($counts)];
-            } else {
-                $subAttr = array_diff($attributes, [$bestAttr]);
-                $tree['branches'][$val] = $this->buildTree($subset, $subAttr, $depth + 1);
+                if (empty($subset)) {
+                    $counts = array_count_values(array_column($data, $this->target));
+                    arsort($counts);
+                    $tree['branches'][$val] = ['label' => key($counts)];
+                } else {
+                    $subAttr = array_diff($attributes, [$bestAttr]);
+                    $tree['branches'][$val] = $this->buildTree($subset, $subAttr, $depth + 1);
+                }
             }
+        } else {
+            // Atribut numerik
+            $left = array_filter($data, fn($row) => $row[$bestAttr] <= $bestThreshold);
+            $right = array_filter($data, fn($row) => $row[$bestAttr] > $bestThreshold);
+
+            $subAttr = array_diff($attributes, [$bestAttr]);
+            $tree['branches']["<= $bestThreshold"] = $this->buildTree($left, $subAttr, $depth + 1);
+            $tree['branches']["> $bestThreshold"] = $this->buildTree($right, $subAttr, $depth + 1);
         }
 
         return $tree;
@@ -136,11 +239,24 @@ class C45
         }
 
         $attr = $tree['attribute'];
-        // Jika gejala dipilih maka val = 1, jika tidak = 0
-        $val = in_array($attr, $input) ? 1 : 0;
+        $threshold = $tree['threshold'] ?? null;
 
-        if (isset($tree['branches'][$val])) {
-            return $this->diagnosa($input, $tree['branches'][$val]);
+        if ($threshold === null) {
+            // Kategori
+            $val = $input[$attr] ?? null;
+            if (isset($tree['branches'][$val])) {
+                return $this->diagnosa($input, $tree['branches'][$val]);
+            }
+        } else {
+            // Numerik
+            $val = $input[$attr] ?? null;
+            if ($val !== null) {
+                if ($val <= $threshold) {
+                    return $this->diagnosa($input, $tree['branches']["<= $threshold"]);
+                } else {
+                    return $this->diagnosa($input, $tree['branches']["> $threshold"]);
+                }
+            }
         }
 
         return null;
@@ -157,18 +273,13 @@ class C45
         $total   = count($testData);
 
         foreach ($testData as $row) {
-            // Bentuk input array dari atribut yang bernilai 1
             $input = [];
             foreach ($this->attributes as $attr) {
-                if ($row[$attr] == 1) {
-                    $input[] = $attr;
-                }
+                $input[$attr] = $row[$attr];
             }
 
-            // Prediksi hasil dengan decision tree
             $predicted = $this->diagnosa($input, $tree);
 
-            // Cek apakah sesuai dengan label sebenarnya
             if ($predicted == $row[$this->target]) {
                 $correct++;
             }
