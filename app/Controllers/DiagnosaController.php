@@ -77,11 +77,11 @@ class DiagnosaController extends BaseController
             'evaluasi'       => $evaluasi          // akurasi
         ]);
 
-        $gejalaTerpilih = $this->request->getPost('gejala');
+        // $gejalaTerpilih = $this->request->getPost('gejala');
 
-        if (empty($gejalaTerpilih)) {
-            return redirect()->back()->with('error', 'Silakan pilih minimal satu gejala.');
-        }
+        // if (empty($gejalaTerpilih)) {
+        //     return redirect()->back()->with('error', 'Silakan pilih minimal satu gejala.');
+        // }
         // Redirect sesuai role
         $role = session()->get('role');
         if ($role === 'admin') {
@@ -97,13 +97,6 @@ class DiagnosaController extends BaseController
     {
         $DiagnosaGuest = new DataGuestModel();
         $session       = session();
-
-        $check = [
-            'email_guest' => $this->request->getPost('email'),
-            'nama_guest' => $this->request->getPost('nama'),
-            'jenis_motor' => $this->request->getPost('jenis'),
-            'merek_motor' => $this->request->getPost('merek'),
-        ];
 
         $gejalaTerpilih = $this->request->getPost('gejala');
 
@@ -131,7 +124,7 @@ class DiagnosaController extends BaseController
         // Prediksi hasil
         $hasilPrediksi = $c45->diagnosa($input, $tree);
 
-        // Ambil detail kerusakan
+        // Ambil detail kerusakan   
         $hasilKerusakan = $this->kerusakanModel
             ->where('kode_kerusakan', $hasilPrediksi)
             ->first();
@@ -158,6 +151,19 @@ class DiagnosaController extends BaseController
         if (empty($gejalaTerpilih)) {
             return redirect()->back()->with('error', 'Silakan pilih minimal satu gejala.');
         }
+
+        $gejala = implode(',', $namaGejalaTerpilih);
+        if (is_array($hasilKerusakan)) {
+            $hasilKerusakan = implode(',', $hasilKerusakan);
+        }
+        $check = [
+            'email_guest' => $this->request->getPost('email'),
+            'nama_guest' => $this->request->getPost('nama'),
+            'jenis_motor' => $this->request->getPost('jenis'),
+            'merek_motor' => $this->request->getPost('merek'),
+            'gejala' => $gejala,
+            'kerusakan' => $hasilKerusakan
+        ];
 
         $DiagnosaGuest->insert($check);
         $session->setFlashdata('success', 'Pengecekan berhasil dilakukan');

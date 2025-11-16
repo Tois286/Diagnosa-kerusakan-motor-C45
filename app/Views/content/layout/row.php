@@ -16,13 +16,24 @@
                         </div>
                         <div class="row no-gutters align-items-center">
                             <div class="col-auto">
-                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?= count($gejala) ?></div>
                             </div>
                             <div class="col">
                                 <div class="progress progress-sm mr-2">
-                                    <div class="progress-bar bg-info" role="progressbar"
-                                        style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-                                        aria-valuemax="100"></div>
+                                    <?php
+                                    $total   = count($gejala);
+                                    $target  = 100;                          // Ubah sesuai jumlah gejala ideal kamu
+                                    $persen  = $target > 0 ? round(($total / $target) * 100) : 0;
+                                    $persen  = min(100, $persen);           // Biar nggak lebih dari 100%
+                                    ?>
+                                    <div class="progress-bar bg-info"
+                                        role="progressbar"
+                                        style="width: <?= $persen ?>%"
+                                        aria-valuenow="<?= $total ?>"
+                                        aria-valuemin="0"
+                                        aria-valuemax="100">
+                                        <?= $persen ?>%
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -44,13 +55,24 @@
                         </div>
                         <div class="row no-gutters align-items-center">
                             <div class="col-auto">
-                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?= count($kerusakan) ?></div>
                             </div>
                             <div class="col">
                                 <div class="progress progress-sm mr-2">
-                                    <div class="progress-bar bg-danger" role="progressbar"
-                                        style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-                                        aria-valuemax="100"></div>
+                                    <?php
+                                    $total   = count($kerusakan);
+                                    $target  = 100;                          // Ubah sesuai jumlah keru$kerusakan ideal kamu
+                                    $persen  = $target > 0 ? round(($total / $target) * 100) : 0;
+                                    $persen  = min(100, $persen);           // Biar nggak lebih dari 100%
+                                    ?>
+                                    <div class="progress-bar bg-info"
+                                        role="progressbar"
+                                        style="width: <?= $persen ?>%"
+                                        aria-valuenow="<?= $total ?>"
+                                        aria-valuemin="0"
+                                        aria-valuemax="100">
+                                        <?= $persen ?>%
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -69,17 +91,28 @@
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Data Pelanggan
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Data Guest
                         </div>
                         <div class="row no-gutters align-items-center">
                             <div class="col-auto">
-                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?= count($guest) ?></div>
                             </div>
                             <div class="col">
                                 <div class="progress progress-sm mr-2">
-                                    <div class="progress-bar bg-warning" role="progressbar"
-                                        style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-                                        aria-valuemax="100"></div>
+                                    <?php
+                                    $total   = count($guest);
+                                    $target  = 100;                          // Ubah sesuai jumlah keru$kerusakan ideal kamu
+                                    $persen  = $target > 0 ? round(($total / $target) * 100) : 0;
+                                    $persen  = min(100, $persen);           // Biar nggak lebih dari 100%
+                                    ?>
+                                    <div class="progress-bar bg-info"
+                                        role="progressbar"
+                                        style="width: <?= $persen ?>%"
+                                        aria-valuenow="<?= $total ?>"
+                                        aria-valuemin="0"
+                                        aria-valuemax="100">
+                                        <?= $persen ?>%
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -102,13 +135,24 @@
                         </div>
                         <div class="row no-gutters align-items-center">
                             <div class="col-auto">
-                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?= count($karyawan) ?></div>
                             </div>
                             <div class="col">
                                 <div class="progress progress-sm mr-2">
-                                    <div class="progress-bar bg-success" role="progressbar"
-                                        style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-                                        aria-valuemax="100"></div>
+                                    <?php
+                                    $total   = count($karyawan);
+                                    $target  = 100;                          // Ubah sesuai jumlah keru$kerusakan ideal kamu
+                                    $persen  = $target > 0 ? round(($total / $target) * 100) : 0;
+                                    $persen  = min(100, $persen);           // Biar nggak lebih dari 100%
+                                    ?>
+                                    <div class="progress-bar bg-info"
+                                        role="progressbar"
+                                        style="width: <?= $persen ?>%"
+                                        aria-valuenow="<?= $total ?>"
+                                        aria-valuemin="0"
+                                        aria-valuemax="100">
+                                        <?= $persen ?>%
+                                    </div>
                                 </div>
                             </div>
                         </div>

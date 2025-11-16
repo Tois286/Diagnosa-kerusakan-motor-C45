@@ -51,14 +51,15 @@
                     <div class="card-body p-0">
                         <!-- Nested Row within Card Body -->
                         <!-- box login -->
-                        <div id="diagnosaBox">
+                        <div id="diagnosaBox" style="display:none;">
                             <div class="row">
                                 <div class="col-lg-2 d-none d-lg-block bg-login-image">
                                     <img src="<?= base_url() ?>img/logoR.png" width="100%" style="padding: 10px;">
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="p-2">
-                                        <h1 class="text-gray-900 mb-2" style="font-size: 2.5rem; padding-top:10px;"> Welcome To UCN Garage</h1>
+                                        <h1 class="text-gray-900 mb-2" style="font-size: 2.5rem; padding-top:10px;">Check Kerusakan</h1>
+                                        <p>Isi form dan pilih gejala kerusakan atau keluhan anda!!</p>
                                     </div>
                                 </div>
                             </div>
@@ -123,7 +124,10 @@
                                             <a class="btn btn-primary btn-user btn-block show-login" href="#" id="showLogin">Login</a>
                                         </div>
                                         <div class="col">
-                                            <a class="btn btn-warning btn-user btn-block show-register" href="#" id="showRegister">Regist</a>
+                                            <a class="btn btn-info btn-user btn-block show-register" href="#" id="showRegister">About</a>
+                                        </div>
+                                        <div class="col">
+                                            <a class="btn btn-warning btn-user btn-block show-Result" href="#" id="showResult">Hasil</a>
                                         </div>
                                     </div>
                                 </form>
@@ -133,8 +137,9 @@
                         <div id="HasilCheck" style="display: none;">
                             <div class="card-body">
                                 <div class="text-center">
-                                    <a class="btn btn-primary show-diagnosa" href="#" id="showDiagnosa">Check Kerusakan!</a>
+                                    <a class="btn btn-primary btn-block show-diagnosa" href="#" id="showDiagnosa">Check Kerusakan!</a>
                                 </div>
+                                <hr>
                                 <?php
                                 $trace = session()->get('trace');
                                 $tree = session()->get('tree');
@@ -259,41 +264,34 @@
                         </div>
 
                         <!-- box register -->
-                        <div id="registerBox" class="row" style="display:none;">
+                        <div id="registerBox" class="row">
                             <div class="col-lg-12">
                                 <div class="p-5">
                                     <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">Register</h1>
+                                        <h1>WELCOME TO UCN GARAGE</h1>
+                                        <img src="<?= base_url() ?>img/unpam.png" width="100px" style="padding: 10px;">
+                                        <img src="<?= base_url() ?>img/logoR.png" width="100px" style="padding: 10px;">
                                     </div>
-                                    <form class="user" method="post" action="<?= base_url('/auth/regist') ?>">
-                                        <input type="hidden" value="pelanggan" name="status_pengguna">
-                                        <div class="form-group">
-                                            <input type="text" name="nama" class="form-control form-control-user"
-                                                placeholder="Nama Lengkap">
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" name="t_tinggal" class="form-control form-control-user"
-                                                placeholder="Tempat Tinggal">
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="date" name="tgl_lahir" class="form-control form-control-user"
-                                                placeholder="Tanggal Lahir">
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="email" name="email" class="form-control form-control-user"
-                                                placeholder="Alamat e-mail">
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="password" name="password" class="form-control form-control-user"
-                                                placeholder="Password">
-                                        </div>
-                                        <button type="submit" class="btn btn-success btn-user btn-block">
-                                            Register Account
-                                        </button>
-                                    </form>
+                                    <div class="text-center">
+                                        <h1 class="h4 text-gray-900 mb-4">UCN GARAGE</h1>
+                                        <p style="text-align: justify; color:black;">
+                                            Inovasi bengkel kami hadir melalui sebuah aplikasi pengecekan
+                                            kerusakan motor yang dikembangkan oleh mahasiswa Universitas Pamulang
+                                            sebagai bentuk kontribusi nyata terhadap perkembangan teknologi otomotif.
+                                            Aplikasi ini dirancang untuk membantu pelanggan melakukan identifikasi awal
+                                            terhadap kerusakan motor secara mudah, cepat, dan akurat. Melalui fitur analisis
+                                            gejala kerusakan yang interaktif, pelanggan dapat mengetahui kondisi motor mereka
+                                            sebelum datang ke bengkel. Dengan demikian, proses pemeriksaan dan perbaikan dapat
+                                            dilakukan dengan lebih efisien, karena mekanik telah mendapatkan gambaran awal
+                                            mengenai masalah yang terjadi. Inovasi ini tidak hanya mempersingkat waktu servis,
+                                            tetapi juga memberikan pengalaman yang lebih nyaman, transparan, dan terpercaya
+                                            bagi setiap pelanggan.</p>
+                                    </div>
+                                    <p>Dibuat Oleh : KUS JUNIAYANA</p>
+
                                     <hr>
                                     <div class="text-center">
-                                        <a class="small show-login" href="#" id="showLogin">Sudah Memiliki Akun? Login!</a>
+                                        <a class="small show-login" href="#" id="showLogin">Login!</a>
                                     </div>
                                     <div class="text-center">
                                         <a class="small show-diagnosa" href="#" id="showDiagnosa">Check Kerusakan Motor</a>
@@ -338,6 +336,16 @@
                 document.getElementById("loginBox").style.display = "none";
                 document.getElementById("HasilCheck").style.display = "none";
                 document.getElementById("diagnosaBox").style.display = "block";
+            });
+        });
+
+        document.querySelectorAll(".show-Result").forEach(btn => {
+            btn.addEventListener("click", function(e) {
+                e.preventDefault();
+                document.getElementById("registerBox").style.display = "none";
+                document.getElementById("loginBox").style.display = "none";
+                document.getElementById("HasilCheck").style.display = "block";
+                document.getElementById("diagnosaBox").style.display = "none";
             });
         });
     </script>

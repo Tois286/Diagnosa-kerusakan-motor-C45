@@ -15,9 +15,11 @@
                         <li class="nav-item">
                             <a href="#" class="nav-link active m-0 font-weight-bold text-primary" id="tbkaryawan" onclick="showKaryawanSection('table')">Table Karyawan</a>
                         </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link m-0 font-weight-bold text-primary" id="tamkaryawan" onclick="showKaryawanSection('form')">Tambah Karyawan</a>
-                        </li>
+                        <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link m-0 font-weight-bold text-primary" id="tamkaryawan" onclick="showKaryawanSection('form')">Tambah Karyawan</a>
+                            </li>
+                        <?php endif; ?>
                     </ul>
                 </div>
                 <?php if (session()->getFlashdata('success')): ?>
@@ -78,7 +80,9 @@
                                     <th>Tempat Tinggal</th>
                                     <th>Tgl Lahir</th>
                                     <th>Status</th>
-                                    <th>Action</th>
+                                    <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                                        <th>Action</th>
+                                    <?php endif; ?>
                                 </tr>
                                 <?php foreach ($karyawan as $user): ?>
                                     <tr>
@@ -89,10 +93,12 @@
                                         <td><?= $user['t_tinggal'] ?></td>
                                         <td><?= $user['tgl_lahir'] ?></td>
                                         <td><?= $user['status_pengguna'] ?></td>
-                                        <td>
-                                            <a href="/admin/edit/<?= $user['id_user'] ?>" class="btn btn-warning btn-sm">Edit</a>
-                                            <a href="/admin/delete/<?= $user['id_user'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Yakin hapus?')">Delete</a>
-                                        </td>
+                                        <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                                            <td>
+                                                <a href="/admin/edit/<?= $user['id_user'] ?>" class="btn btn-warning btn-sm">Edit</a>
+                                                <a href="/admin/delete/<?= $user['id_user'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Yakin hapus?')">Delete</a>
+                                            </td>
+                                        <?php endif; ?>
                                     </tr>
                                 <?php endforeach; ?>
                             </table>

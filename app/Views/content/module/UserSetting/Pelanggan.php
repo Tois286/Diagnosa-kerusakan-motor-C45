@@ -80,15 +80,6 @@
                             <button type="submit" class="btn btn-success btn-user btn-block">
                                 Check
                             </button>
-                            <hr>
-                            <div class="text-center row">
-                                <div class="col">
-                                    <a class="btn btn-primary btn-user btn-block show-login" href="#" id="showLogin">Login</a>
-                                </div>
-                                <div class="col">
-                                    <a class="btn btn-warning btn-user btn-block show-register" href="#" id="showRegister">Regist</a>
-                                </div>
-                            </div>
                         </form>
                     </div>
                     <!-- Tabel Pelanggan -->
@@ -101,6 +92,8 @@
                                     <th>Nama</th>
                                     <th>Jenis Kendaraan</th>
                                     <th>Merek Kendaraan</th>
+                                    <th>Gejala / Keluhan</th>
+                                    <th>Kerusakan & Solusi</th>
                                     <th>Action</th>
                                 </tr>
                                 <?php foreach ($guest as $user): ?>
@@ -110,6 +103,8 @@
                                         <td><?= $user['nama_guest'] ?></td>
                                         <td><?= $user['jenis_motor'] ?></td>
                                         <td><?= $user['merek_motor'] ?></td>
+                                        <td><?= $user['gejala'] ?></td>
+                                        <td><?= $user['kerusakan'] ?></td>
                                         <td>
                                             <a href="/admin/edit/<?= $user['id_guest'] ?>" class="btn btn-warning btn-sm">Edit</a>
                                             <a href="/admin/delete/<?= $user['id_guest'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Yakin hapus?')">Delete</a>

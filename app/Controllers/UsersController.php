@@ -17,7 +17,8 @@ class UsersController extends BaseController
         $data['kerusakan'] = $kerusakanModel->findAll();
 
         $userModel = new \App\Models\UserModel();
-
+        $guestModel = new \App\Models\DataGuestModel();
+        $data['guest'] = $guestModel->findAll();
         // ambil semua user
         $data['users'] = $userModel->getUser();
 
