@@ -7,6 +7,7 @@ use App\Models\GejalaModel;
 use App\Models\KerusakanModel;
 use App\Libraries\C45;
 use App\Models\DataGuestModel;
+use App\Models\DataHistoryModel;
 
 class DiagnosaController extends BaseController
 {
@@ -77,12 +78,7 @@ class DiagnosaController extends BaseController
             'evaluasi'       => $evaluasi          // akurasi
         ]);
 
-        // $gejalaTerpilih = $this->request->getPost('gejala');
 
-        // if (empty($gejalaTerpilih)) {
-        //     return redirect()->back()->with('error', 'Silakan pilih minimal satu gejala.');
-        // }
-        // Redirect sesuai role
         $role = session()->get('role');
         if ($role === 'admin') {
             return redirect()->to('/content/admin/index?tab=HasilDiagnosa');
@@ -93,9 +89,11 @@ class DiagnosaController extends BaseController
         return redirect()->to('/diagnosa');
     }
 
+
     public function check()
     {
         $DiagnosaGuest = new DataGuestModel();
+        $historyModel  = new DataHistoryModel();
         $session       = session();
 
         $gejalaTerpilih = $this->request->getPost('gejala');
@@ -104,15 +102,15 @@ class DiagnosaController extends BaseController
             return redirect()->back()->with('error', 'Silakan pilih minimal satu gejala.');
         }
 
-        // Ambil semua data training
+        // ======================
+        // PROSES DIAGNOSA
+        // ======================
         $dataset = $this->dataTrainingModel->findAll();
 
-        // Buat instance C45
         $c45 = new C45($dataset);
         $tree = $c45->buildTree();
         $trace = $c45->getTrace();
 
-        // Siapkan input sesuai atribut dataset
         $allAttributes = array_keys($dataset[0]);
         $allAttributes = array_filter($allAttributes, fn($a) => !in_array($a, ['id_training', 'hasil']));
 
@@ -121,52 +119,70 @@ class DiagnosaController extends BaseController
             $input[$attr] = in_array($attr, $gejalaTerpilih) ? 1 : 0;
         }
 
-        // Prediksi hasil
         $hasilPrediksi = $c45->diagnosa($input, $tree);
 
-        // Ambil detail kerusakan   
         $hasilKerusakan = $this->kerusakanModel
             ->where('kode_kerusakan', $hasilPrediksi)
             ->first();
 
-        // Ambil nama gejala terpilih
+        // ======================
+        // FORMAT DATA
+        // ======================
         $gejalaList = $this->gejalaModel->findAll();
         $mapGejala = array_column($gejalaList, 'nama_gejala', 'kode_gejala');
         $namaGejalaTerpilih = array_map(fn($g) => $mapGejala[$g] ?? $g, $gejalaTerpilih);
 
-        // Evaluasi
-        $evaluasi = $c45->evaluate($dataset, $tree);
+        $gejalaString = implode(',', $namaGejalaTerpilih);
 
-        // Simpan ke session
-        session()->set([
-            'tree'           => $tree,             // pohon keputusan
-            'trace'          => $trace,            // perhitungan entropy & gain
-            'gejalaTerpilih' => $namaGejalaTerpilih,
-            'hasil'          => $hasilKerusakan,   // hasil diagnosa
-            'evaluasi'       => $evaluasi          // akurasi
-        ]);
+        $hasilString = is_array($hasilKerusakan)
+            ? implode(',', $hasilKerusakan)
+            : $hasilKerusakan;
 
-        $gejalaTerpilih = $this->request->getPost('gejala');
-
-        if (empty($gejalaTerpilih)) {
-            return redirect()->back()->with('error', 'Silakan pilih minimal satu gejala.');
-        }
-
-        $gejala = implode(',', $namaGejalaTerpilih);
-        if (is_array($hasilKerusakan)) {
-            $hasilKerusakan = implode(',', $hasilKerusakan);
-        }
-        $check = [
+        // ======================
+        // 1. INSERT KE data_guest
+        // ======================
+        $dataGuest = [
             'email_guest' => $this->request->getPost('email'),
-            'nama_guest' => $this->request->getPost('nama'),
+            'nama_guest'  => $this->request->getPost('nama'),
             'jenis_motor' => $this->request->getPost('jenis'),
             'merek_motor' => $this->request->getPost('merek'),
-            'gejala' => $gejala,
-            'kerusakan' => $hasilKerusakan
+            'gejala'      => $gejalaString,
+            'kerusakan'   => $hasilString
         ];
 
-        $DiagnosaGuest->insert($check);
+        $DiagnosaGuest->insert($dataGuest);
+
+        // ambil id_guest terakhir
+        $idGuest = $DiagnosaGuest->getInsertID();
+
+        // ======================
+        // 2. INSERT KE riwayat_diagnosa
+        // ======================
+        $dataHistory = [
+            'id_guest'        => $idGuest,
+            'id_dataUser'     => $this->request->getPost('id_dataUser'), // user login
+            'nama_guest'      => $this->request->getPost('nama'),
+            'gejala'          => $gejalaString,
+            'hasil_kerusakan' => $hasilString,
+            'solusi'          => $hasilKerusakan['solusi'] ?? '-',
+            'nama_karyawan'   => $this->request->getPost('nama_karyawan'),
+            'created_at'      => date('Y-m-d H:i:s')
+        ];
+
+        $historyModel->insert($dataHistory);
+
+        // ======================
+        // SESSION HASIL
+        // ======================
+        session()->set([
+            'tree'           => $tree,
+            'trace'          => $trace,
+            'gejalaTerpilih' => $namaGejalaTerpilih,
+            'hasil'          => $hasilKerusakan
+        ]);
+
         $session->setFlashdata('success', 'Pengecekan berhasil dilakukan');
-        return redirect()->back()->with('showResult', true);
+
+        return redirect()->to('/content/admin/index?tab=HasilDiagnosa')->with('showResult', true);
     }
 }

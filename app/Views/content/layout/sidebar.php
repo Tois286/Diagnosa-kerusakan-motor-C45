@@ -87,7 +87,7 @@
                  <div class="collapse-divider"></div>
                  <h6 class="collapse-header">Kinerja C4.5:</h6>
                  <a class="collapse-item nav-btn" type="button" data-target="DetailDiagnosa">Detail Analisis</a>
-                 <a class="collapse-item" href="blank.html">Laporan</a>
+                 <a class="collapse-item nav-btn" type="button" data-target="Laporan">Laporan</a>
              </div>
          </div>
      </li>

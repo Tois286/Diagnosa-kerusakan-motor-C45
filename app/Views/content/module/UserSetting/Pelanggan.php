@@ -27,6 +27,9 @@
                     <!-- Form Pelanggan -->
                     <div id="form-pelanggan" style="display: none;">
                         <form action="<?= base_url('/diagnosa/check') ?>" method="post">
+                            <input type="hidden" name="nama_karyawan" value="<?= $sesUser[0]['nama_user'] ?>">
+                            <p><strong>Nama Karyawan:</strong> <?= $sesUser[0]['nama_user'] ?></p>
+                            <input type="hidden" name="id_dataUser" value="<?= $sesUser[0]['id_dataUser'] ?>">
                             <div class="form-group">
                                 <input type="email" name="email" class="form-control form-control-user"
                                     placeholder="Enter Email pengguna">
@@ -82,6 +85,59 @@
                             </button>
                         </form>
                     </div>
+                    <div class="modal fade" id="modalEditPelanggan" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+
+                                <form method="POST" action="/admin/updatePelanggan">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Edit Pelanggan</h5>
+
+                                    </div>
+
+                                    <div class="modal-body">
+                                        <input type="hidden" name="id_guest" id="edit-idPelanggan">
+
+                                        <div class="mb-2">
+                                            <label>Email</label>
+                                            <input type="text" name="email_guest" id="edit-emailPelanggan" class="form-control">
+                                        </div>
+
+                                        <div class="mb-2">
+                                            <label>Nama</label>
+                                            <input type="text" name="nama_guest" id="edit-namaPelanggan" class="form-control">
+                                        </div>
+
+                                        <div class="mb-2">
+                                            <label>Jenis Kendaraan</label>
+                                            <input type="text" name="jenis_motor" id="edit-jenisPelanggan" class="form-control">
+                                        </div>
+
+                                        <div class="mb-2">
+                                            <label>Merek Kendaraan</label>
+                                            <input type="text" name="merek_motor" id="edit-merekPelanggan" class="form-control">
+                                        </div>
+
+                                        <div class="mb-2">
+                                            <label>Gejala</label>
+                                            <textarea name="gejala" id="edit-gejalaPelanggan" class="form-control"></textarea>
+                                        </div>
+
+                                        <div class="mb-2">
+                                            <label>Kerusakan & Solusi</label>
+                                            <textarea name="kerusakan" id="edit-kerusakanPelanggan" class="form-control"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary">Update</button>
+                                    </div>
+
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
                     <!-- Tabel Pelanggan -->
                     <div id="table-pelanggan">
                         <div class="table-responsive" style="max-height: 300px;">
@@ -106,8 +162,21 @@
                                         <td><?= $user['gejala'] ?></td>
                                         <td><?= $user['kerusakan'] ?></td>
                                         <td>
-                                            <a href="/admin/edit/<?= $user['id_guest'] ?>" class="btn btn-warning btn-sm">Edit</a>
-                                            <a href="/admin/delete/<?= $user['id_guest'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Yakin hapus?')">Delete</a>
+                                            <button
+                                                class="btn btn-warning btn-sm btn-editPelanggan"
+                                                data-id="<?= $user['id_guest'] ?>"
+                                                data-email="<?= $user['email_guest'] ?>"
+                                                data-nama="<?= $user['nama_guest'] ?>"
+                                                data-jenis="<?= $user['jenis_motor'] ?>"
+                                                data-merek="<?= $user['merek_motor'] ?>"
+                                                data-gejala="<?= $user['gejala'] ?>"
+                                                data-kerusakan="<?= $user['kerusakan'] ?>">
+                                                Edit
+                                            </button>
+
+                                            <a href="/admin/delete/<?= $user['id_guest'] ?>"
+                                                class="btn btn-danger btn-sm"
+                                                onclick="return confirm('Yakin hapus?')">Delete</a>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -118,7 +187,23 @@
             </div>
         </div>
     </div>
+    <script>
+        document.querySelectorAll('.btn-editPelanggan').forEach(button => {
+            button.addEventListener('click', function() {
 
+                document.getElementById('edit-idPelanggan').value = this.dataset.id;
+                document.getElementById('edit-emailPelanggan').value = this.dataset.email;
+                document.getElementById('edit-namaPelanggan').value = this.dataset.nama;
+                document.getElementById('edit-jenisPelanggan').value = this.dataset.jenis;
+                document.getElementById('edit-merekPelanggan').value = this.dataset.merek;
+                document.getElementById('edit-gejalaPelanggan').value = this.dataset.gejala;
+                document.getElementById('edit-kerusakanPelanggan').value = this.dataset.kerusakan;
+
+                let modal = new bootstrap.Modal(document.getElementById('modalEditPelanggan'));
+                modal.show();
+            });
+        });
+    </script>
     <script>
         function showSection(section) {
             const formSection = document.getElementById('form-pelanggan');

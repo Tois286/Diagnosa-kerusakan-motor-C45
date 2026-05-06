@@ -26,8 +26,8 @@
                         <table class="table">
                             <tr>
                                 <th>No.</th>
-                                <th>Kode Gejala</th>
-                                <th>Nama Gejala</th>
+                                <th>Kode Kerusakan</th>
+                                <th>Nama Kerusakan</th>
                                 <th>Solusi</th>
                                 <th>Action</th>
                             </tr>
@@ -39,9 +39,19 @@
                                         <td><?= esc($row['kode_kerusakan']) ?></td>
                                         <td><?= esc($row['nama_kerusakan']) ?></td>
                                         <td><?= esc($row['solusi']) ?></td>
-                                        <td>
-                                            <a href="/admin/edit/<?= $row['id_kerusakan'] ?>" class="btn btn-warning btn-sm">Edit</a>
-                                            <a href="/admin/delete/<?= $row['id_kerusakan'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Yakin hapus?')">Delete</a>
+                                        <td class="d-flex gap-4">
+                                            <button type="button"
+                                                class="btn btn-warning btn-sm btn-edit-kerusakan"
+                                                style="margin-right: 5px;"
+                                                data-id="<?= $row['id_kerusakan'] ?>"
+                                                data-kode="<?= $row['kode_kerusakan'] ?>"
+                                                data-nama="<?= $row['nama_kerusakan'] ?>"
+                                                data-solusi="<?= $row['solusi'] ?>"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modalEditkerusakan">
+                                                Edit
+                                            </button>
+                                            <a href="/kerusakan/delete/<?= $row['id_kerusakan'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Yakin hapus?')">Delete</a>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -52,9 +62,67 @@
                             <?php endif; ?>
                         </table>
                     </div>
+                    <div class="modal fade" id="modalEditkerusakan" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
 
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Edit kerusakan</h5>
+                                    <button type="button" class="btn btn-close btn-danger btn-sm" data-bs-dismiss="modal"><i class="bi bi-x-lg"></i></button>
+                                </div>
+
+                                <div class="modal-body">
+                                    <form id="formEditkerusakan" method="POST" action="<?= base_url('kerusakan/edit') ?>">
+
+                                        <input type="hidden" name="id_kerusakan" id="id_kerusakan">
+
+                                        <div class="mb-3">
+                                            <label>Kode kerusakan</label>
+                                            <input type="text" class="form-control" name="kode_kerusakan" id="kode_kerusakan">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label>Nama kerusakan</label>
+                                            <input type="text" class="form-control" name="nama_kerusakan" id="nama_kerusakan">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label>Solusi</label>
+                                            <input type="text" class="form-control" name="solusi" id="solusi">
+                                        </div>
+
+                                        <button type="submit" class="btn btn-primary">Update</button>
+
+                                    </form>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </body>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+<script>
+    document.querySelectorAll('.btn-edit-kerusakan').forEach(btn => {
+        btn.addEventListener('click', function() {
+
+            // Ambil data dari tombol
+            const id = this.dataset.id;
+            const kode = this.dataset.kode;
+            const nama = this.dataset.nama;
+            const solusi = this.dataset.solusi;
+
+            // Isi ke form modal
+            document.getElementById('id_kerusakan').value = id;
+            document.getElementById('kode_kerusakan').value = kode;
+            document.getElementById('nama_kerusakan').value = nama;
+            document.getElementById('solusi').value = solusi;
+        });
+    });
+</script>

@@ -28,7 +28,10 @@
                 <div class="card-body">
                     <!-- Form Karyawan -->
                     <div id="form-karyawan" style="display: none;">
-                        <form style="padding-bottom: 20px;" action="<?= base_url('user/save') ?>" method="post" enctype="multipart/form-data">
+                        <form style="padding-bottom: 20px;"
+                            action="<?= base_url('AdminSet/save') ?>"
+                            method="post"
+                            enctype="multipart/form-data">
                             <div class="row">
                                 <div class="col">
                                     <label for="email">Email</label>
@@ -67,7 +70,66 @@
                             </div>
                         </form>
                     </div>
+                    <div class="modal fade" id="modalEditKaryawan" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
 
+                                <form method="POST" action="<?= base_url('AdminSet/edit') ?>">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Edit User</h5>
+
+                                    </div>
+
+                                    <div class="modal-body">
+                                        <input type="hidden" name="id_user" id="edit-idKaryawan">
+
+                                        <div class="mb-2">
+                                            <label>Email</label>
+                                            <input type="text" name="email" id="edit-emailKaryawan" class="form-control">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label for="password">Password</label>
+                                            <input type="password" name="password" class="form-control" placeholder="Input Password">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>Role</label>
+                                            <input type="text" name="role" id="edit-roleKaryawan" class="form-control">
+                                        </div>
+
+                                        <div class="mb-2">
+                                            <label>Nama</label>
+                                            <input type="text" name="nama" id="edit-namaKaryawan" class="form-control">
+                                        </div>
+
+                                        <div class="mb-2">
+                                            <label>Tempat Tinggal</label>
+                                            <input type="text" name="t_tinggal" id="edit-tinggalKaryawan" class="form-control">
+                                        </div>
+
+                                        <div class="mb-2">
+                                            <label>Tanggal Lahir</label>
+                                            <input type="date" name="tgl_lahir" id="edit-tglKaryawan" class="form-control">
+                                        </div>
+
+                                        <div class="mb-2">
+                                            <label>Status</label>
+                                            <input type="text" name="status_karyawan" id="edit-statusKaryawan" class="form-control">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label for="foto">Upload Foto</label>
+                                            <input type="file" class="form-control" name="foto">
+                                        </div>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary">Update</button>
+                                    </div>
+
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
                     <!-- Tabel Karyawan -->
                     <div id="table-karyawan">
                         <div class="table-responsive" style="max-height: 300px;">
@@ -95,8 +157,21 @@
                                         <td><?= $user['status_pengguna'] ?></td>
                                         <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
                                             <td>
-                                                <a href="/admin/edit/<?= $user['id_user'] ?>" class="btn btn-warning btn-sm">Edit</a>
-                                                <a href="/admin/delete/<?= $user['id_user'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Yakin hapus?')">Delete</a>
+                                                <button
+                                                    class="btn btn-warning btn-sm btn-editKaryawan"
+                                                    data-idkaryawan="<?= $user['id_user'] ?>"
+                                                    data-emailkaryawan="<?= $user['email'] ?>"
+                                                    data-rolekaryawan="<?= $user['role'] ?>"
+                                                    data-namaKaryawan="<?= $user['nama_user'] ?>"
+                                                    data-tinggalkaryawan="<?= $user['t_tinggal'] ?>"
+                                                    data-tglkaryawan="<?= $user['tgl_lahir'] ?>"
+                                                    data-statuskaryawan="<?= $user['status_pengguna'] ?>">
+                                                    Edit
+                                                </button>
+
+                                                <a href="/AdminSet/delete/<?= $user['id_user'] ?>"
+                                                    class="btn btn-danger btn-sm"
+                                                    onclick="return confirm('Yakin hapus?')">Delete</a>
                                             </td>
                                         <?php endif; ?>
                                     </tr>
@@ -109,6 +184,23 @@
         </div>
     </div>
 
+    <script>
+        document.querySelectorAll('.btn-editKaryawan').forEach(button => {
+            button.addEventListener('click', function() {
+
+                document.getElementById('edit-idKaryawan').value = this.dataset.idkaryawan;
+                document.getElementById('edit-emailKaryawan').value = this.dataset.emailkaryawan;
+                document.getElementById('edit-roleKaryawan').value = this.dataset.rolekaryawan;
+                document.getElementById('edit-namaKaryawan').value = this.dataset.namaKaryawan;
+                document.getElementById('edit-tinggalKaryawan').value = this.dataset.tinggalkaryawan;
+                document.getElementById('edit-tglKaryawan').value = this.dataset.tglkaryawan;
+                document.getElementById('edit-statusKaryawan').value = this.dataset.statuskaryawan;
+
+                let modal = new bootstrap.Modal(document.getElementById('modalEditKaryawan'));
+                modal.show();
+            });
+        });
+    </script>
     <script>
         function showKaryawanSection(section) {
             const formSection = document.getElementById('form-karyawan');

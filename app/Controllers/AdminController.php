@@ -48,6 +48,9 @@ class AdminController extends BaseController
         $data['admin'] = $userModel->getUser(null, 'admin');
         // $data['pelanggan'] = $userModel->getUser(null, 'pelanggan');
 
+        $story = new \App\Models\DataHistoryModel();
+        $data['history'] = $story->findAll();
+
         return view('content/admin/index', $data);
     }
 }

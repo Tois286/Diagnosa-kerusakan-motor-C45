@@ -13,7 +13,7 @@ class UserModel extends Model
     public function getUser($idUser = null, $role = null)
     {
         $builder = $this->db->table('user u')
-            ->select('u.id_user, u.email, u.role, d.id_dataUser, d.nama_user, d.t_tinggal, d.tgl_lahir, d.status_pengguna')
+            ->select('u.id_user, u.email, u.role, d.id_dataUser, d.nama_user, d.t_tinggal, d.tgl_lahir, d.status_pengguna, d.foto')
             ->join('data_user d', 'd.id_user = u.id_user', 'left');
 
         // filter berdasarkan id_user (misalnya untuk session login)

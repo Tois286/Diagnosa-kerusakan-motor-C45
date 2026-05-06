@@ -58,7 +58,9 @@
                     <div id="DetailDiagnosa" hidden>
                         <?= $this->include('content/module/DetailDiagnosa') ?>
                     </div>
-
+                    <div id="Laporan" hidden>
+                        <?= $this->include('content/module/Laporan') ?>
+                    </div>
 
                     <!-- Content Row -->
 

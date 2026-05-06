@@ -254,7 +254,7 @@
                                     </form>
                                     <hr>
                                     <div class="text-center">
-                                        <a class="small show-register" href="#" id="showRegister">Buat Akun!</a>
+                                        <a class="small show-register" href="#" id="showRegister">About</a>
                                     </div>
                                     <div class="text-center">
                                         <a class="small show-diagnosa" href="#" id="showDiagnosa">Check Kerusakan!</a>
